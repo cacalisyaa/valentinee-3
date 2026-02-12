@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valentine My Melody 💗</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&family=Pacifico&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: 'Quicksand', sans-serif;
+  background-color: #ffe6f2;
+  background-image: url("https://i.ibb.co/0jqHpnp/melody-pattern.png");
+  background-size: 180px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Amplop 3D */
+.scene { perspective: 1000px; }
+.envelope {
+  width: 280px;
+  height: 180px;
+  background: #ff99cc;
+  position: relative;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 1s;
+}
+.flap {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #ff66a3;
+  clip-path: polygon(0 0, 50% 60%, 100% 0);
+  transform-origin: top;
+  transition: transform 1s ease;
+}
+.envelope.open .flap { transform: rotateX(-180deg); }
+
+/* Kartu */
+.card {
+  position: absolute;
+  width: 260px;
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  top: 20px;
+  left: 10px;
+  transform: translateY(40px);
+  opacity: 0;
+  transition: 1s ease;
+  box-shadow: 0 10px 25px rgba(255,105,180,0.4);
+  max-height: 500px;
+  overflow-y: auto;
+  z-index: 2;
+}
+.envelope.open .card {
+  transform: translateY(-120px);
+  opacity: 1;
+}
+.card img { width: 110px; }
+h1 {
+  font-family: 'Pacifico', cursive;
+  color: #ff4da6;
+  font-size: 22px;
+  margin: 10px 0;
+}
+p {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* Sparkle */
+.sparkle {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background: white;
+  border-radius: 50%;
+  animation: twinkle 2s infinite ease-in-out;
+}
+@keyframes twinkle {
+  0%,100% { opacity: 0.2; transform: scale(0.8);}
+  50% { opacity: 1; transform: scale(1.3);}
+}
+
+/* Hearts */
+.heart {
+  position: fixed;
+  bottom: -20px;
+  animation: rise 6s linear infinite;
+  color: #ff66b3;
+}
+@keyframes rise {
+  0% { transform: translateY(0); opacity: 1;}
+  100% { transform: translateY(-100vh); opacity: 0;}
+}
+
+/* Lirik */
+.lyrics {
+  font-size: 12px;
+  color: #ff4da6;
+  margin-top: 10px;
+  min-height: 50px;
+  opacity: 0;
+  transition: opacity 0.8s;
+}
+
+/* Mute Button */
+#muteBtn {
+  font-size: 22px;
+  cursor: pointer;
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  z-index: 1000;
+  background: #ff99cc;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+/* Responsive */
+@media(max-width:400px){
+  .envelope { width: 240px; height:160px; }
+  .card { width:220px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Tombol Mute -->
+<div id="muteBtn" onclick="toggleMute()">💗</div>
+
+<div class="scene">
+  <div class="envelope" id="envelope" onclick="openEnvelope()">
+    <div class="flap"></div>
+
+    <div class="card">
+      <img src="mymelody.png">
+      <h1>Happy Valentine 💕</h1>
+      <p>untuk <b id="namaSahabat">ismet bauu</b> 🎀<br><br>
+      happy valentine memett, mksh y udh mw temenan sm ak..JNGN bSN MAIN SAMA AK PLZ!?!?nanti aku ga ada temen lagi.. maapin kalau ak banyak omong.karena itulah jati diriku, wel wel wel
+    aku pembaik #karisapembaikimutlucudancantik💗<br><br>
+      semoga pertemanan kita selalu manis, hangat, dan penuh cinta seperti my melody 🐰✨ >__O
+      </p>
+
+      <!-- Audio Player -->
+      <audio id="audio" loop>
+        <source src="biggirldontcryfergie.mp3.mp4" type="audio/mpeg">
+      </audio>
+
+      <!-- Lirik -->
+      <div class="lyrics" id="lyrics"></div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+document.getElementById("namaSahabat").innerText = "mas pais loh ya💖";
+
+// Hearts & sparkles
+function createHeart(){
+  const heart = document.createElement("div");
+  heart.classList.add("heart");
+  heart.innerHTML = "💗";
+  heart.style.left = Math.random()*100 + "vw";
+  heart.style.fontSize = Math.random()*15+15+"px";
+  document.body.appendChild(heart);
+  setTimeout(()=>heart.remove(),6000);
+}
+setInterval(createHeart,500);
+
+function createSparkle(){
+  const sparkle = document.createElement("div");
+  sparkle.classList.add("sparkle");
+  sparkle.style.left = Math.random()*100+"vw";
+  sparkle.style.top = Math.random()*100+"vh";
+  document.body.appendChild(sparkle);
+  setTimeout(()=>sparkle.remove(),2000);
+}
+setInterval(createSparkle,300);
+
+// Amplop buka
+function openEnvelope(){
+  const env = document.getElementById("envelope");
+  env.classList.add("open");
+
+  setTimeout(()=>{
+    const audio = document.getElementById("audio");
+    audio.play().catch(err => console.log("Audio play error:", err));
+    startLyrics();
+  },800);
+}
+
+// Mute/unmute
+function toggleMute(){
+  const audio = document.getElementById("audio");
+  audio.muted = !audio.muted;
+  document.getElementById("muteBtn").innerText = audio.muted ? "🔇" : "💗";
+}
+
+// Lirik sinkron demo Big Girls Don't Cry (reff Valentine)
+function startLyrics(){
+  const audio = document.getElementById("audio");
+  const lyricDiv = document.getElementById("lyrics");
+  lyricDiv.style.opacity = 1;
+
+  audio.addEventListener("timeupdate", () => {
+    const t = audio.currentTime;
+    if(t >= 0 && t < 4){
+      lyricDiv.innerText = "I'll be your best friend and you'll be my valentine";
+    } else if(t >= 8 && t < 13){
+      lyricDiv.innerText = "Yes you can hold my hand if you want to";
+    } else if(t >= 13 && t < 17){
+      lyricDiv.innerText = "'Cause I want to hold yours too";
+    } else if(t >= 17 && t < 24){
+      lyricDiv.innerText = "We'll be playmates and lovers and share our secret worlds";
+    }
+  });
+}
+</script>
+
+</body>
+</html>
